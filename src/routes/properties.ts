@@ -1,4 +1,8 @@
 import { Router } from 'express';
+import { validateBody } from '../middleware/validate.js';
+import { createPropertySchema, type CreatePropertyInput } from '../schemas/property.js';
+import { Errors } from '../lib/errors.js';
+import { createRoomSchema, type CreateRoomInput } from '../schemas/room.js';
 
 export const propertiesRouter: Router = Router()
 
@@ -30,14 +34,13 @@ propertiesRouter.get('/', (_req, res) => {
 propertiesRouter.get('/:id', (req, res) => {
     const property = PROPERTIES.find(p => p.id === req.params.id)
     if (!property) {
-        res.status(404).json({ error: 'Property not found' });
-        return;
+        throw Errors.notFound('Property');
     }
     res.json(property);
 })
 
-propertiesRouter.post('/', (req, res) => {
-    const newProperty = req.body;
+propertiesRouter.post('/', validateBody(createPropertySchema), (req, res) => {
+    const newProperty = req.body as CreatePropertyInput;
     PROPERTIES.push(newProperty);
     res
     .status(201)
@@ -45,29 +48,42 @@ propertiesRouter.post('/', (req, res) => {
     .json(newProperty);
 })
 
-// --- Session 07 homework ---
-
 propertiesRouter.delete('/:id', (req, res) => {
     const index = PROPERTIES.findIndex(p => p.id === req.params.id);
     if (index === -1) {
-        res.status(404).json({ error: 'Property not found' });
-        return;
+        throw Errors.notFound('Property');
     }
     PROPERTIES.splice(index, 1);
     res.status(204).send();
 })
 
 const ROOMS = [
-    { id: 'r1', propertyId: 'prop-001', name: 'Room A', price: '20,000', seatsTotal: 2, seatsFree: 1, hasAC: true },
-    { id: 'r2', propertyId: 'prop-001', name: 'Room B', price: '22,000', seatsTotal: 2, seatsFree: 2, hasAC: true },
-    { id: 'r3', propertyId: 'prop-002', name: 'Room C', price: '18,000', seatsTotal: 3, seatsFree: 0, hasAC: false },
+    { id: 'r1', propertyId: 'prop-001', name: 'Room A', price: 20000, seatsTotal: 2, seatsFree: 1, hasAC: true },
+    { id: 'r2', propertyId: 'prop-001', name: 'Room B', price: 22000, seatsTotal: 2, seatsFree: 2, hasAC: true },
+    { id: 'r3', propertyId: 'prop-002', name: 'Room C', price: 18000, seatsTotal: 3, seatsFree: 0, hasAC: false },
 ];
 
 propertiesRouter.get('/:id/rooms', (req, res) => {
     const property = PROPERTIES.find(p => p.id === req.params.id);
     if (!property) {
-        res.status(404).json({ error: 'Property not found' });
-        return;
+        throw Errors.notFound('Property')
     }
     res.json(ROOMS.filter(r => r.propertyId === req.params.id));
 })
+
+propertiesRouter.post('/:id/rooms', validateBody(createRoomSchema), (req, res) => {
+    const newRoom = req.body as CreateRoomInput;
+    const propertyId = req.params.id;
+    if (!propertyId || typeof propertyId === 'object') {
+        throw Errors.validation('Invalid Property ID')
+    }
+    ROOMS.push({
+        propertyId: propertyId,
+        ...newRoom
+    });
+    res
+    .status(201)
+    .location(`${req.baseUrl}/${newRoom.id}`)
+    .json(newRoom);
+})
+
