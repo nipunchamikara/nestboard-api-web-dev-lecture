@@ -44,3 +44,30 @@ propertiesRouter.post('/', (req, res) => {
     .location(`${req.baseUrl}/${newProperty.id}`)
     .json(newProperty);
 })
+
+// --- Session 07 homework ---
+
+propertiesRouter.delete('/:id', (req, res) => {
+    const index = PROPERTIES.findIndex(p => p.id === req.params.id);
+    if (index === -1) {
+        res.status(404).json({ error: 'Property not found' });
+        return;
+    }
+    PROPERTIES.splice(index, 1);
+    res.status(204).send();
+})
+
+const ROOMS = [
+    { id: 'r1', propertyId: 'prop-001', name: 'Room A', price: '20,000', seatsTotal: 2, seatsFree: 1, hasAC: true },
+    { id: 'r2', propertyId: 'prop-001', name: 'Room B', price: '22,000', seatsTotal: 2, seatsFree: 2, hasAC: true },
+    { id: 'r3', propertyId: 'prop-002', name: 'Room C', price: '18,000', seatsTotal: 3, seatsFree: 0, hasAC: false },
+];
+
+propertiesRouter.get('/:id/rooms', (req, res) => {
+    const property = PROPERTIES.find(p => p.id === req.params.id);
+    if (!property) {
+        res.status(404).json({ error: 'Property not found' });
+        return;
+    }
+    res.json(ROOMS.filter(r => r.propertyId === req.params.id));
+})
