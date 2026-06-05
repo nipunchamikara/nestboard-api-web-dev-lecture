@@ -14,6 +14,8 @@ More layers join over the next sessions (validation, auth, Postgres, security, f
 
 ## Running it
 
+> **Full setup, including the database** (Docker or a free cloud Postgres, migrations, seed data): see **[SETUP.md](./SETUP.md)**. From Session 09 onward you'll need a database running before `npm run dev`.
+
 ```bash
 npm install
 
