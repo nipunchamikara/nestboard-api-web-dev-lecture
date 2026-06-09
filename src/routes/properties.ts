@@ -1,89 +1,97 @@
 import { Router } from 'express';
+import { prisma } from '../lib/prisma.js';
+import { toPropertyDTO } from '../lib/dto.js';
 import { validateBody } from '../middleware/validate.js';
 import { createPropertySchema, type CreatePropertyInput } from '../schemas/property.js';
 import { Errors } from '../lib/errors.js';
 import { createRoomSchema, type CreateRoomInput } from '../schemas/room.js';
+import { verifyJwt } from '../middleware/auth.js';
 
 export const propertiesRouter: Router = Router()
 
-const PROPERTIES = [
-  {
-    id: 'prop-001',
-    title: 'Sunset Apartment',
-    location: 'Ethul Kotte, Sri Lanka',
-    type: 'Apartment',
-    price: '20K',
-    rating: 4.8,
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=500&fit=crop',
-  },
-  {
-    id: 'prop-002',
-    title: 'Palm House',
-    location: 'Gampaha, Sri Lanka',
-    type: 'House',
-    price: '18K',
-    rating: 4.2,
-    image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=400&h=500&fit=crop',
-  },
-];
-
-propertiesRouter.get('/', (_req, res) => {
-    res.json(PROPERTIES)
-})
-
-propertiesRouter.get('/:id', (req, res) => {
-    const property = PROPERTIES.find(p => p.id === req.params.id)
-    if (!property) {
-        throw Errors.notFound('Property');
+propertiesRouter.get('/', async (_req, res, next) => {
+    try {
+        const properties = await prisma.property.findMany({
+            where: { isActive: true },
+            orderBy: { createdAt: 'desc' },
+            include: { rooms: true }
+        })
+        res.json(properties.map(toPropertyDTO));
+    } catch (err) {
+        next(err)
     }
-    res.json(property);
 })
 
-propertiesRouter.post('/', validateBody(createPropertySchema), (req, res) => {
-    const newProperty = req.body as CreatePropertyInput;
-    PROPERTIES.push(newProperty);
-    res
-    .status(201)
-    .location(`${req.baseUrl}/${newProperty.id}`)
-    .json(newProperty);
-})
-
-propertiesRouter.delete('/:id', (req, res) => {
-    const index = PROPERTIES.findIndex(p => p.id === req.params.id);
-    if (index === -1) {
-        throw Errors.notFound('Property');
+propertiesRouter.get('/:id', async (req, res, next) => {
+    try {
+        const property = await prisma.property.findUnique({
+            where: { id: req.params.id },
+            include: { rooms: true },
+        });
+        if (!property) throw Errors.notFound('Property');
+        res.json(property.rooms);
+    } catch (err) {
+        next(err);
     }
-    PROPERTIES.splice(index, 1);
-    res.status(204).send();
 })
 
-const ROOMS = [
-    { id: 'r1', propertyId: 'prop-001', name: 'Room A', price: 20000, seatsTotal: 2, seatsFree: 1, hasAC: true },
-    { id: 'r2', propertyId: 'prop-001', name: 'Room B', price: 22000, seatsTotal: 2, seatsFree: 2, hasAC: true },
-    { id: 'r3', propertyId: 'prop-002', name: 'Room C', price: 18000, seatsTotal: 3, seatsFree: 0, hasAC: false },
-];
-
-propertiesRouter.get('/:id/rooms', (req, res) => {
-    const property = PROPERTIES.find(p => p.id === req.params.id);
-    if (!property) {
-        throw Errors.notFound('Property')
+propertiesRouter.post('/', verifyJwt, validateBody(createPropertySchema), async (req, res, next) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) throw Errors.unauthenticated()
+        const property = await prisma.property.create({ data: {
+            ...req.body,
+            vendorId: userId
+        }});
+        res
+            .status(201)
+            .location(`${req.baseUrl}/${property.id}`)
+            .json(property);
+    } catch (err) {
+        next(err);
     }
-    res.json(ROOMS.filter(r => r.propertyId === req.params.id));
 })
 
-propertiesRouter.post('/:id/rooms', validateBody(createRoomSchema), (req, res) => {
-    const newRoom = req.body as CreateRoomInput;
-    const propertyId = req.params.id;
-    if (!propertyId || typeof propertyId === 'object') {
-        throw Errors.validation('Invalid Property ID')
+propertiesRouter.delete('/:id', async (req, res, next) => {
+    try {
+        await prisma.property.delete({
+            where: {
+                id: req.params.id
+            }
+        })
+        res.status(204).send()
+    } catch (err) {
+        next(err)
     }
-    ROOMS.push({
-        propertyId: propertyId,
-        ...newRoom
-    });
-    res
-    .status(201)
-    .location(`${req.baseUrl}/${newRoom.id}`)
-    .json(newRoom);
 })
+
+// const ROOMS = [
+//     { id: 'r1', propertyId: 'prop-001', name: 'Room A', price: 20000, seatsTotal: 2, seatsFree: 1, hasAC: true },
+//     { id: 'r2', propertyId: 'prop-001', name: 'Room B', price: 22000, seatsTotal: 2, seatsFree: 2, hasAC: true },
+//     { id: 'r3', propertyId: 'prop-002', name: 'Room C', price: 18000, seatsTotal: 3, seatsFree: 0, hasAC: false },
+// ];
+
+// propertiesRouter.get('/:id/rooms', (req, res) => {
+//     const property = PROPERTIES.find(p => p.id === req.params.id);
+//     if (!property) {
+//         throw Errors.notFound('Property')
+//     }
+//     res.json(ROOMS.filter(r => r.propertyId === req.params.id));
+// })
+
+// propertiesRouter.post('/:id/rooms', validateBody(createRoomSchema), (req, res) => {
+//     const newRoom = req.body as CreateRoomInput;
+//     const propertyId = req.params.id;
+//     if (!propertyId || typeof propertyId === 'object') {
+//         throw Errors.validation('Invalid Property ID')
+//     }
+//     ROOMS.push({
+//         propertyId: propertyId,
+//         ...newRoom
+//     });
+//     res
+//     .status(201)
+//     .location(`${req.baseUrl}/${newRoom.id}`)
+//     .json(newRoom);
+// })
 
