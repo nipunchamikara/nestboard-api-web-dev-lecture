@@ -5,14 +5,32 @@ import { validateBody } from '../middleware/validate.js';
 import { createPropertySchema, type CreatePropertyInput } from '../schemas/property.js';
 import { Errors } from '../lib/errors.js';
 import { createRoomSchema, type CreateRoomInput } from '../schemas/room.js';
-import { verifyJwt } from '../middleware/auth.js';
+import { requireRole, verifyJwt } from '../middleware/auth.js';
+import { Role } from '../generated/enums.js';
 
 export const propertiesRouter: Router = Router()
+
+propertiesRouter.use(verifyJwt);
 
 propertiesRouter.get('/', async (_req, res, next) => {
     try {
         const properties = await prisma.property.findMany({
             where: { isActive: true },
+            orderBy: { createdAt: 'desc' },
+            include: { rooms: true }
+        })
+        res.json(properties.map(toPropertyDTO));
+    } catch (err) {
+        next(err)
+    }
+})
+
+propertiesRouter.get('/mine', requireRole('ADMIN'), async (req, res, next) => {
+    try {
+        const vendorId = req.user?.id;
+        if (!vendorId) throw Errors.unauthenticated();
+        const properties = await prisma.property.findMany({
+            where: { isActive: true, vendorId },
             orderBy: { createdAt: 'desc' },
             include: { rooms: true }
         })
@@ -35,7 +53,7 @@ propertiesRouter.get('/:id', async (req, res, next) => {
     }
 })
 
-propertiesRouter.post('/', verifyJwt, validateBody(createPropertySchema), async (req, res, next) => {
+propertiesRouter.post('/', requireRole(Role.ADMIN), validateBody(createPropertySchema), async (req, res, next) => {
     try {
         const userId = req.user?.id;
         if (!userId) throw Errors.unauthenticated()
