@@ -7,6 +7,9 @@ scratch/
 .DS_Store
 coverage/
 
+# Locally-uploaded files (runtime artifacts from the L12 upload endpoint)
+uploads/
+
 # Editor
 .vscode/
 

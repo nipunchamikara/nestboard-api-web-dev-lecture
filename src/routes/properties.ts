@@ -1,101 +1,109 @@
-import { Router } from 'express';
-import { prisma } from '../lib/prisma.js';
-import { toPropertyDTO } from '../lib/dto.js';
-import { validateBody } from '../middleware/validate.js';
-import { createPropertySchema, type CreatePropertyInput } from '../schemas/property.js';
-import { Errors } from '../lib/errors.js';
-import { createRoomSchema, type CreateRoomInput } from '../schemas/room.js';
-import { requireRole, verifyJwt } from '../middleware/auth.js';
-import { Role } from '../generated/enums.js';
+import { Router } from "express";
+import { prisma } from "../lib/prisma.js";
+import { toPropertyDTO } from "../lib/dto.js";
+import { validateBody } from "../middleware/validate.js";
+import {
+  createPropertySchema,
+  type CreatePropertyInput,
+} from "../schemas/property.js";
+import { Errors } from "../lib/errors.js";
+import { createRoomSchema, type CreateRoomInput } from "../schemas/room.js";
+import { requireRole, verifyJwt } from "../middleware/auth.js";
+import { Role } from "../generated/enums.js";
 
-export const propertiesRouter: Router = Router()
+export const propertiesRouter: Router = Router();
 
 propertiesRouter.use(verifyJwt);
 
-propertiesRouter.get('/', async (_req, res, next) => {
+propertiesRouter.get("/", async (_req, res, next) => {
+  try {
+    const properties = await prisma.property.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: "desc" },
+      include: { rooms: true },
+    });
+    res.json(properties.map(toPropertyDTO));
+  } catch (err) {
+    next(err);
+  }
+});
+
+propertiesRouter.get("/mine", requireRole("ADMIN"), async (req, res, next) => {
+  try {
+    const vendorId = req.user?.id;
+    if (!vendorId) throw Errors.unauthenticated();
+    const properties = await prisma.property.findMany({
+      where: { isActive: true, vendorId },
+      orderBy: { createdAt: "desc" },
+      include: { rooms: true },
+    });
+    res.json(properties.map(toPropertyDTO));
+  } catch (err) {
+    next(err);
+  }
+});
+
+propertiesRouter.get("/:id", async (req, res, next) => {
+  try {
+    const property = await prisma.property.findUnique({
+      where: { id: req.params.id },
+      include: { rooms: true },
+    });
+    if (!property) throw Errors.notFound("Property");
+    res.json(property.rooms);
+  } catch (err) {
+    next(err);
+  }
+});
+
+propertiesRouter.post(
+  "/",
+  requireRole(Role.ADMIN),
+  validateBody(createPropertySchema),
+  async (req, res, next) => {
     try {
-        const properties = await prisma.property.findMany({
-            where: { isActive: true },
-            orderBy: { createdAt: 'desc' },
-            include: { rooms: true }
-        })
-        res.json(properties.map(toPropertyDTO));
+      const userId = req.user?.id;
+      if (!userId) throw Errors.unauthenticated();
+      const property = await prisma.property.create({
+        data: {
+          ...req.body,
+          vendorId: userId,
+        },
+      });
+      res.status(201).location(`${req.baseUrl}/${property.id}`).json(property);
     } catch (err) {
-        next(err)
+      next(err);
     }
-})
+  },
+);
 
-propertiesRouter.get('/mine', requireRole('ADMIN'), async (req, res, next) => {
-    try {
-        const vendorId = req.user?.id;
-        if (!vendorId) throw Errors.unauthenticated();
-        const properties = await prisma.property.findMany({
-            where: { isActive: true, vendorId },
-            orderBy: { createdAt: 'desc' },
-            include: { rooms: true }
-        })
-        res.json(properties.map(toPropertyDTO));
-    } catch (err) {
-        next(err)
-    }
-})
+propertiesRouter.delete("/:id", async (req, res, next) => {
+  try {
+    await prisma.property.delete({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+});
 
-propertiesRouter.get('/:id', async (req, res, next) => {
-    try {
-        const property = await prisma.property.findUnique({
-            where: { id: req.params.id },
-            include: { rooms: true },
-        });
-        if (!property) throw Errors.notFound('Property');
-        res.json(property.rooms);
-    } catch (err) {
-        next(err);
-    }
-})
+propertiesRouter.get("/:id/rooms", async (req, res, next) => {
+  try {
+    const property = await prisma.property.findUnique({
+      where: { id: req.params.id },
+      include: { rooms: true },
+    });
 
-propertiesRouter.post('/', requireRole(Role.ADMIN), validateBody(createPropertySchema), async (req, res, next) => {
-    try {
-        const userId = req.user?.id;
-        if (!userId) throw Errors.unauthenticated()
-        const property = await prisma.property.create({ data: {
-            ...req.body,
-            vendorId: userId
-        }});
-        res
-            .status(201)
-            .location(`${req.baseUrl}/${property.id}`)
-            .json(property);
-    } catch (err) {
-        next(err);
-    }
-})
+    if (!property) throw Errors.notFound("Property");
 
-propertiesRouter.delete('/:id', async (req, res, next) => {
-    try {
-        await prisma.property.delete({
-            where: {
-                id: req.params.id
-            }
-        })
-        res.status(204).send()
-    } catch (err) {
-        next(err)
-    }
-})
-
-// const ROOMS = [
-//     { id: 'r1', propertyId: 'prop-001', name: 'Room A', price: 20000, seatsTotal: 2, seatsFree: 1, hasAC: true },
-//     { id: 'r2', propertyId: 'prop-001', name: 'Room B', price: 22000, seatsTotal: 2, seatsFree: 2, hasAC: true },
-//     { id: 'r3', propertyId: 'prop-002', name: 'Room C', price: 18000, seatsTotal: 3, seatsFree: 0, hasAC: false },
-// ];
-
-// propertiesRouter.get('/:id/rooms', (req, res) => {
-//     const property = PROPERTIES.find(p => p.id === req.params.id);
-//     if (!property) {
-//         throw Errors.notFound('Property')
-//     }
-//     res.json(ROOMS.filter(r => r.propertyId === req.params.id));
-// })
+    res.json(property.rooms);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // propertiesRouter.post('/:id/rooms', validateBody(createRoomSchema), (req, res) => {
 //     const newRoom = req.body as CreateRoomInput;
@@ -112,4 +120,3 @@ propertiesRouter.delete('/:id', async (req, res, next) => {
 //     .location(`${req.baseUrl}/${newRoom.id}`)
 //     .json(newRoom);
 // })
-
