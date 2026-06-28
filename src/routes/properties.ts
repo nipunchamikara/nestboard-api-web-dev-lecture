@@ -1,13 +1,15 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma.js";
-import { toPropertyDetailDTO, toPropertyDTO, toRoomDTO } from "../lib/dto.js";
+import {
+  toPropertyDetailDTO,
+  toPropertyDTO,
+  toRoomTypeDTO,
+} from "../lib/dto.js";
 import { validateBody } from "../middleware/validate.js";
 import {
   createPropertySchema,
-  type CreatePropertyInput,
 } from "../schemas/property.js";
 import { Errors } from "../lib/errors.js";
-import { createRoomSchema, type CreateRoomInput } from "../schemas/room.js";
 import { requireRole, verifyJwt } from "../middleware/auth.js";
 import { Role } from "../generated/enums.js";
 
@@ -40,7 +42,11 @@ propertiesRouter.get("/", async (req, res, next) => {
         orderBy: { createdAt: "desc" },
         skip,
         take,
-        include: { rooms: true },
+        include: {
+          roomTypes: {
+            include: { rooms: true },
+          },
+        },
       }),
     ]);
     const totalPages = Math.ceil(total / limit);
@@ -71,7 +77,11 @@ propertiesRouter.get(
       const properties = await prisma.property.findMany({
         where: { isActive: true, vendorId },
         orderBy: { createdAt: "desc" },
-        include: { rooms: true },
+        include: {
+          roomTypes: {
+            include: { rooms: true },
+          },
+        },
       });
       res.json(properties.map(toPropertyDTO));
     } catch (err) {
@@ -125,7 +135,13 @@ propertiesRouter.get(
         where: { userId },
         orderBy: { createdAt: "desc" },
         include: {
-          property: { include: { rooms: true } },
+          property: {
+            include: {
+              roomTypes: {
+                include: { rooms: true },
+              },
+            },
+          },
         },
       });
 
@@ -172,13 +188,15 @@ propertiesRouter.patch(
     }
   },
 );
-
-
 propertiesRouter.get("/:id", async (req, res, next) => {
   try {
     const property = await prisma.property.findUnique({
       where: { id: req.params.id },
-      include: { rooms: true },
+      include: {
+        roomTypes: {
+          include: { rooms: true },
+        },
+      },
     });
     if (!property) throw Errors.notFound("Property");
     res.json(toPropertyDetailDTO(property));
@@ -231,12 +249,18 @@ propertiesRouter.get("/:id/room-types", async (req, res, next) => {
   try {
     const property = await prisma.property.findUnique({
       where: { id: req.params.id },
-      include: { rooms: true },
+      include: {
+        roomTypes: {
+          where: { isAvailable: true },
+          orderBy: { createdAt: "asc" },
+          include: { rooms: true },
+        },
+      },
     });
 
     if (!property) throw Errors.notFound("Property");
 
-    res.json(property.rooms.map(toRoomDTO));
+    res.json(property.roomTypes.map((roomType) => toRoomTypeDTO(roomType)));
   } catch (err) {
     next(err);
   }
@@ -244,16 +268,21 @@ propertiesRouter.get("/:id/room-types", async (req, res, next) => {
 
 propertiesRouter.get("/:id/room-types/:roomTypeId", async (req, res, next) => {
   try {
-    const room = await prisma.room.findFirst({
+    const roomType = await prisma.roomType.findFirst({
       where: {
         id: req.params.roomTypeId,
         propertyId: req.params.id,
       },
+      include: {
+        rooms: {
+          orderBy: { roomLabel: "asc" },
+        },
+      },
     });
 
-    if (!room) throw Errors.notFound("Room");
+    if (!roomType) throw Errors.notFound("Room type");
 
-    res.json(toRoomDTO(room));
+    res.json(toRoomTypeDTO(roomType, true));
   } catch (err) {
     next(err);
   }

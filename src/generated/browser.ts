@@ -33,6 +33,11 @@ export type RefreshToken = Prisma.RefreshTokenModel
  */
 export type Property = Prisma.PropertyModel
 /**
+ * Model RoomType
+ * 
+ */
+export type RoomType = Prisma.RoomTypeModel
+/**
  * Model Room
  * 
  */

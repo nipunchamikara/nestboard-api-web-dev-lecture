@@ -66,16 +66,50 @@ async function main() {
       },
     }));
 
-  for (const r of [
-    { name: "Room A", pricePerMonth: 20000, seatCapacity: 2, hasAC: true },
-    { name: "Room B", pricePerMonth: 22000, seatCapacity: 2, hasAC: true },
-    { name: "Room C", pricePerMonth: 18000, seatCapacity: 3, hasAC: false },
+  for (const rt of [
+    {
+      name: "AC Twin Sharing",
+      pricePerMonth: 22000,
+      seatCapacity: 2,
+      hasAC: true,
+      rooms: ["A-101", "A-102"],
+    },
+    {
+      name: "Standard Triple",
+      pricePerMonth: 18000,
+      seatCapacity: 3,
+      hasAC: false,
+      rooms: ["B-201", "B-202"],
+    },
   ]) {
-    const room = await prisma.room.findFirst({
-      where: { propertyId: property.id, name: r.name },
-    });
-    if (!room)
-      await prisma.room.create({ data: { ...r, propertyId: property.id } });
+    const roomType =
+      (await prisma.roomType.findFirst({
+        where: { propertyId: property.id, name: rt.name },
+      })) ??
+      (await prisma.roomType.create({
+        data: {
+          propertyId: property.id,
+          name: rt.name,
+          pricePerMonth: rt.pricePerMonth,
+          seatCapacity: rt.seatCapacity,
+          hasAC: rt.hasAC,
+        },
+      }));
+
+    for (const roomLabel of rt.rooms) {
+      const room = await prisma.room.findFirst({
+        where: { roomTypeId: roomType.id, roomLabel },
+      });
+
+      if (!room) {
+        await prisma.room.create({
+          data: {
+            roomTypeId: roomType.id,
+            roomLabel,
+          },
+        });
+      }
+    }
   }
 
   console.log("Seed complete.");
