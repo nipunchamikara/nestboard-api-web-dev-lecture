@@ -8,8 +8,9 @@ const envSchema = z.object({
   DATABASE_URL: z.url(),
   JWT_ACCESS_SECRET: z.string().min(32),
   CORS_ORIGINS: z.string().default("http://localhost:5173"),
-  UPLOAD_PROVIDER: z.enum(['local', 'cloudinary']).default('local'),
-  UPLOAD_LOCAL_DIR: z.string().default('./uploads'),
+  UPLOAD_PROVIDER: z.enum(["local", "cloudinary"]).default("local"),
+  UPLOAD_LOCAL_DIR: z.string().default("./uploads"),
+  RATE_LIMIT: z.coerce.number().int().positive().default(100),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -48,3 +48,65 @@ export function toPropertyDTO(
     image: p.imageUrl,
   };
 }
+
+export type RoomDTO = {
+  id: string;
+  name: string;
+  price: string;
+  seatsTotal: number;
+  seatsFree: number;
+  hasAC: boolean;
+};
+
+export type PropertyDetailDTO = {
+  id: string;
+  title: string;
+  address: string;
+  amenities: string[];
+  rating: number;
+  seatsAvailable: number;
+  minStay: string;
+  startingPrice: string;
+  image: string;
+  rooms: RoomDTO[];
+};
+
+function money(n: number): string {
+  return Math.round(n).toLocaleString("en-LK");
+}
+
+export function toRoomDTO(room: PrismaRoom): RoomDTO {
+  return {
+    id: room.id,
+    name: room.name,
+    price: money(Number(room.pricePerMonth.toString())),
+    seatsTotal: room.seatCapacity,
+    seatsFree: room.seatCapacity,
+    hasAC: room.hasAC,
+  };
+}
+
+export function toPropertyDetailDTO(
+  p: PrismaProperty & { rooms: PrismaRoom[] },
+): PropertyDetailDTO {
+  const prices = p.rooms
+    .map((room) => Number(room.pricePerMonth.toString()))
+    .filter((price) => price > 0);
+
+  const minPrice = prices.length ? Math.min(...prices) : null;
+  const rooms = p.rooms.map(toRoomDTO);
+  const seatsAvailable = rooms.reduce((sum, room) => sum + room.seatsFree, 0);
+
+  return {
+    id: p.id,
+    title: p.title,
+    address: `${p.address}, ${p.city}`,
+    amenities: [TYPE_LABEL[p.type], ...p.amenities],
+    rating: Number(p.rating.toString()),
+    seatsAvailable,
+    minStay: p.minStay,
+    startingPrice: minPrice !== null ? `LKR ${compactKilo(minPrice)}` : "-",
+    image: p.imageUrl,
+    rooms,
+  };
+}

@@ -47,6 +47,8 @@ model User {
   passwordHash String? @map("password_hash")
   refreshTokens RefreshToken[]
 
+  favorites Favorite[]
+
   @@map("users")
 }
 
@@ -80,6 +82,7 @@ model Property {
   minStay      String       @default("1 month") @map("min_stay")
   isActive     Boolean      @default(true) @map("is_active")
   createdAt    DateTime     @default(now()) @map("created_at")
+  favoritedBy  Favorite[]
 
   vendor User   @relation("VendorProperties", fields: [vendorId], references: [id], onDelete: Cascade)
   rooms  Room[]
@@ -125,4 +128,17 @@ model Booking {
   @@index([roomId, seatNumber, bookingStatus, leaseStart, leaseEnd])
   @@index([tenantId, createdAt(sort: Desc)])
   @@map("bookings")
+}
+
+model Favorite {
+  userId String @map("user_id") @db.Uuid
+  propertyId String @map("property_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, propertyId])
+  @@index([propertyId])
+  @@map("favorites")
 }

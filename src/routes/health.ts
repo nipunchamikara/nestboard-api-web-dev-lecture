@@ -10,11 +10,11 @@ healthRouter.get("/live", (_req, res) => {
   });
 });
 
-healthRouter.get('/ready', async (_req, res) => {
+healthRouter.get("/ready", async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    res.json({ status: 'ok', db: 'connected' });
+    res.json({ status: "ok", db: "connected" });
   } catch {
-    res.status(503).json({ status: 'unavailable', db: 'disconnected' });
+    res.status(503).json({ status: "unavailable", db: "disconnected" });
   }
 });
