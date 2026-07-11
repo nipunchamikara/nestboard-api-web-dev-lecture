@@ -387,6 +387,7 @@ export const ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
   Property: 'Property',
+  RoomType: 'RoomType',
   Room: 'Room',
   Booking: 'Booking',
   Favorite: 'Favorite'
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "property" | "room" | "booking" | "favorite"
+    modelProps: "user" | "refreshToken" | "property" | "roomType" | "room" | "booking" | "favorite"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -628,6 +629,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PropertyCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PropertyCountAggregateOutputType> | number
+        }
+      }
+    }
+    RoomType: {
+      payload: Prisma.$RoomTypePayload<ExtArgs>
+      fields: Prisma.RoomTypeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RoomTypeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RoomTypeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>
+        }
+        findFirst: {
+          args: Prisma.RoomTypeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RoomTypeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>
+        }
+        findMany: {
+          args: Prisma.RoomTypeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>[]
+        }
+        create: {
+          args: Prisma.RoomTypeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>
+        }
+        createMany: {
+          args: Prisma.RoomTypeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RoomTypeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>[]
+        }
+        delete: {
+          args: Prisma.RoomTypeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>
+        }
+        update: {
+          args: Prisma.RoomTypeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>
+        }
+        deleteMany: {
+          args: Prisma.RoomTypeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RoomTypeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RoomTypeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>[]
+        }
+        upsert: {
+          args: Prisma.RoomTypeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomTypePayload>
+        }
+        aggregate: {
+          args: Prisma.RoomTypeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoomType>
+        }
+        groupBy: {
+          args: Prisma.RoomTypeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoomTypeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RoomTypeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoomTypeCountAggregateOutputType> | number
         }
       }
     }
@@ -939,13 +1014,25 @@ export const PropertyScalarFieldEnum = {
 export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
 
 
-export const RoomScalarFieldEnum = {
+export const RoomTypeScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
   name: 'name',
   pricePerMonth: 'pricePerMonth',
   seatCapacity: 'seatCapacity',
   hasAC: 'hasAC',
+  isAvailable: 'isAvailable',
+  createdAt: 'createdAt'
+} as const
+
+export type RoomTypeScalarFieldEnum = (typeof RoomTypeScalarFieldEnum)[keyof typeof RoomTypeScalarFieldEnum]
+
+
+export const RoomScalarFieldEnum = {
+  id: 'id',
+  roomTypeId: 'roomTypeId',
+  roomLabel: 'roomLabel',
+  isAvailable: 'isAvailable',
   createdAt: 'createdAt'
 } as const
 
@@ -1253,6 +1340,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   refreshToken?: Prisma.RefreshTokenOmit
   property?: Prisma.PropertyOmit
+  roomType?: Prisma.RoomTypeOmit
   room?: Prisma.RoomOmit
   booking?: Prisma.BookingOmit
   favorite?: Prisma.FavoriteOmit

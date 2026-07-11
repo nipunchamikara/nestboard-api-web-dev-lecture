@@ -28,11 +28,12 @@ export async function createBookingPending(
     async (tx) => {
       const room = await tx.room.findUnique({
         where: { id: input.roomId },
+        include: { roomType: true },
       });
       if (!room) throw Errors.notFound("Room");
-      if (input.seatNumber > room.seatCapacity) {
+      if (input.seatNumber > room.roomType.seatCapacity) {
         throw Errors.validation(
-          `Seat ${input.seatNumber} exceeds capacity ${room.seatCapacity}`,
+          `Seat ${input.seatNumber} exceeds capacity ${room.roomType.seatCapacity}`,
         );
       }
 
@@ -66,7 +67,7 @@ export async function createBookingPending(
         }
       }
 
-      const totalAmount = room.pricePerMonth.mul(input.durationMonths);
+      const totalAmount = room.roomType.pricePerMonth.mul(input.durationMonths);
 
       return tx.booking.create({
         data: {
@@ -133,7 +134,7 @@ export async function listMyBookings(
     where: { tenantId },
     orderBy: { createdAt: "desc" },
     include: {
-      room: { include: { property: true } },
+      room: { include: { roomType: { include: { property: true } } } },
     },
   });
 }

@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma.js";
-import { toPropertyDetailDTO, toPropertyDTO, toRoomDTO } from "../lib/dto.js";
+import {
+  toPropertyDetailDTO,
+  toPropertyDTO,
+  toRoomDTO,
+  toRoomTypeDTO,
+} from "../lib/dto.js";
 import { validateBody } from "../middleware/validate.js";
 import {
   createPropertySchema,
@@ -40,7 +45,7 @@ propertiesRouter.get("/", async (req, res, next) => {
         orderBy: { createdAt: "desc" },
         skip,
         take,
-        include: { rooms: true },
+        include: { roomTypes: true },
       }),
     ]);
     const totalPages = Math.ceil(total / limit);
@@ -71,7 +76,7 @@ propertiesRouter.get(
       const properties = await prisma.property.findMany({
         where: { isActive: true, vendorId },
         orderBy: { createdAt: "desc" },
-        include: { rooms: true },
+        include: { roomTypes: true },
       });
       res.json(properties.map(toPropertyDTO));
     } catch (err) {
@@ -125,7 +130,7 @@ propertiesRouter.get(
         where: { userId },
         orderBy: { createdAt: "desc" },
         include: {
-          property: { include: { rooms: true } },
+          property: { include: { roomTypes: { include: { rooms: true } } } },
         },
       });
 
@@ -173,12 +178,11 @@ propertiesRouter.patch(
   },
 );
 
-
 propertiesRouter.get("/:id", async (req, res, next) => {
   try {
     const property = await prisma.property.findUnique({
       where: { id: req.params.id },
-      include: { rooms: true },
+      include: { roomTypes: { include: { rooms: true } } },
     });
     if (!property) throw Errors.notFound("Property");
     res.json(toPropertyDetailDTO(property));
@@ -231,12 +235,18 @@ propertiesRouter.get("/:id/room-types", async (req, res, next) => {
   try {
     const property = await prisma.property.findUnique({
       where: { id: req.params.id },
-      include: { rooms: true },
+      include: {
+        roomTypes: {
+          where: { isAvailable: true },
+          include: { rooms: true },
+          orderBy: { createdAt: "asc" },
+        },
+      },
     });
 
     if (!property) throw Errors.notFound("Property");
 
-    res.json(property.rooms.map(toRoomDTO));
+    res.json(property.roomTypes.map(toRoomTypeDTO));
   } catch (err) {
     next(err);
   }
@@ -244,16 +254,21 @@ propertiesRouter.get("/:id/room-types", async (req, res, next) => {
 
 propertiesRouter.get("/:id/room-types/:roomTypeId", async (req, res, next) => {
   try {
-    const room = await prisma.room.findFirst({
+    const roomType = await prisma.roomType.findFirst({
       where: {
         id: req.params.roomTypeId,
         propertyId: req.params.id,
       },
+      include: {
+        rooms: {
+          orderBy: { roomLabel: "asc" },
+        },
+      },
     });
 
-    if (!room) throw Errors.notFound("Room");
+    if (!roomType) throw Errors.notFound("RoomType");
 
-    res.json(toRoomDTO(room));
+    res.json(toRoomTypeDTO(roomType));
   } catch (err) {
     next(err);
   }
