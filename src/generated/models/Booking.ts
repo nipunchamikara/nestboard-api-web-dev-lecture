@@ -279,11 +279,9 @@ export type BookingWhereInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFilter<"Booking">
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFilter<"Booking"> | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFilter<"Booking">
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string;
   tenant?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>;
@@ -324,11 +322,9 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<
       | number
       | string;
     paymentStatus?:
-      | Prisma.EnumPaymentStatusFilter<"Booking">
-      | $Enums.PaymentStatus;
+      Prisma.EnumPaymentStatusFilter<"Booking"> | $Enums.PaymentStatus;
     bookingStatus?:
-      | Prisma.EnumBookingStatusFilter<"Booking">
-      | $Enums.BookingStatus;
+      Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus;
     createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string;
     tenant?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>;
@@ -426,11 +422,9 @@ export type BookingUpdateInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   tenant?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput;
   room?: Prisma.RoomUpdateOneRequiredWithoutBookingsNestedInput;
@@ -451,11 +445,9 @@ export type BookingUncheckedUpdateInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -486,11 +478,9 @@ export type BookingUpdateManyMutationInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -509,11 +499,9 @@ export type BookingUncheckedUpdateManyInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -628,8 +616,7 @@ export type BookingUpdateManyWithoutTenantNestedInput = {
   createMany?: Prisma.BookingCreateManyTenantInputEnvelope;
   set?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   disconnect?:
-    | Prisma.BookingWhereUniqueInput
-    | Prisma.BookingWhereUniqueInput[];
+    Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   delete?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   update?:
@@ -639,8 +626,7 @@ export type BookingUpdateManyWithoutTenantNestedInput = {
     | Prisma.BookingUpdateManyWithWhereWithoutTenantInput
     | Prisma.BookingUpdateManyWithWhereWithoutTenantInput[];
   deleteMany?:
-    | Prisma.BookingScalarWhereInput
-    | Prisma.BookingScalarWhereInput[];
+    Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[];
 };
 
 export type BookingUncheckedUpdateManyWithoutTenantNestedInput = {
@@ -660,8 +646,7 @@ export type BookingUncheckedUpdateManyWithoutTenantNestedInput = {
   createMany?: Prisma.BookingCreateManyTenantInputEnvelope;
   set?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   disconnect?:
-    | Prisma.BookingWhereUniqueInput
-    | Prisma.BookingWhereUniqueInput[];
+    Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   delete?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   update?:
@@ -671,8 +656,7 @@ export type BookingUncheckedUpdateManyWithoutTenantNestedInput = {
     | Prisma.BookingUpdateManyWithWhereWithoutTenantInput
     | Prisma.BookingUpdateManyWithWhereWithoutTenantInput[];
   deleteMany?:
-    | Prisma.BookingScalarWhereInput
-    | Prisma.BookingScalarWhereInput[];
+    Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[];
 };
 
 export type BookingCreateNestedManyWithoutRoomInput = {
@@ -722,8 +706,7 @@ export type BookingUpdateManyWithoutRoomNestedInput = {
   createMany?: Prisma.BookingCreateManyRoomInputEnvelope;
   set?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   disconnect?:
-    | Prisma.BookingWhereUniqueInput
-    | Prisma.BookingWhereUniqueInput[];
+    Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   delete?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   update?:
@@ -733,8 +716,7 @@ export type BookingUpdateManyWithoutRoomNestedInput = {
     | Prisma.BookingUpdateManyWithWhereWithoutRoomInput
     | Prisma.BookingUpdateManyWithWhereWithoutRoomInput[];
   deleteMany?:
-    | Prisma.BookingScalarWhereInput
-    | Prisma.BookingScalarWhereInput[];
+    Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[];
 };
 
 export type BookingUncheckedUpdateManyWithoutRoomNestedInput = {
@@ -754,8 +736,7 @@ export type BookingUncheckedUpdateManyWithoutRoomNestedInput = {
   createMany?: Prisma.BookingCreateManyRoomInputEnvelope;
   set?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   disconnect?:
-    | Prisma.BookingWhereUniqueInput
-    | Prisma.BookingWhereUniqueInput[];
+    Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   delete?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   connect?: Prisma.BookingWhereUniqueInput | Prisma.BookingWhereUniqueInput[];
   update?:
@@ -765,8 +746,7 @@ export type BookingUncheckedUpdateManyWithoutRoomNestedInput = {
     | Prisma.BookingUpdateManyWithWhereWithoutRoomInput
     | Prisma.BookingUpdateManyWithWhereWithoutRoomInput[];
   deleteMany?:
-    | Prisma.BookingScalarWhereInput
-    | Prisma.BookingScalarWhereInput[];
+    Prisma.BookingScalarWhereInput | Prisma.BookingScalarWhereInput[];
 };
 
 export type EnumPaymentStatusFieldUpdateOperationsInput = {
@@ -813,8 +793,7 @@ export type BookingCreateOrConnectWithoutTenantInput = {
 
 export type BookingCreateManyTenantInputEnvelope = {
   data:
-    | Prisma.BookingCreateManyTenantInput
-    | Prisma.BookingCreateManyTenantInput[];
+    Prisma.BookingCreateManyTenantInput | Prisma.BookingCreateManyTenantInput[];
   skipDuplicates?: boolean;
 };
 
@@ -864,11 +843,9 @@ export type BookingScalarWhereInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFilter<"Booking">
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFilter<"Booking"> | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFilter<"Booking">
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string;
 };
 
@@ -965,11 +942,9 @@ export type BookingUpdateWithoutTenantInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   room?: Prisma.RoomUpdateOneRequiredWithoutBookingsNestedInput;
 };
@@ -988,11 +963,9 @@ export type BookingUncheckedUpdateWithoutTenantInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -1010,11 +983,9 @@ export type BookingUncheckedUpdateManyWithoutTenantInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -1044,11 +1015,9 @@ export type BookingUpdateWithoutRoomInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   tenant?: Prisma.UserUpdateOneRequiredWithoutBookingsNestedInput;
 };
@@ -1067,11 +1036,9 @@ export type BookingUncheckedUpdateWithoutRoomInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -1089,11 +1056,9 @@ export type BookingUncheckedUpdateManyWithoutRoomInput = {
     | number
     | string;
   paymentStatus?:
-    | Prisma.EnumPaymentStatusFieldUpdateOperationsInput
-    | $Enums.PaymentStatus;
+    Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus;
   bookingStatus?:
-    | Prisma.EnumBookingStatusFieldUpdateOperationsInput
-    | $Enums.BookingStatus;
+    Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -1709,9 +1674,9 @@ export interface BookingDelegate<
       Prisma.Extends<"skip", Prisma.Keys<T>>,
       Prisma.Extends<"take", Prisma.Keys<T>>
     >,
-    OrderByArg extends Prisma.True extends HasSelectOrTake
+    OrderByArg extends (Prisma.True extends HasSelectOrTake
       ? { orderBy: BookingGroupByArgs["orderBy"] }
-      : { orderBy?: BookingGroupByArgs["orderBy"] },
+      : { orderBy?: BookingGroupByArgs["orderBy"] }),
     OrderFields extends Prisma.ExcludeUnderscoreKeys<
       Prisma.Keys<Prisma.MaybeTupleToUnion<T["orderBy"]>>
     >,
@@ -1719,8 +1684,8 @@ export interface BookingDelegate<
     ByValid extends Prisma.Has<ByFields, OrderFields>,
     HavingFields extends Prisma.GetHavingFields<T["having"]>,
     HavingValid extends Prisma.Has<ByFields, HavingFields>,
-    ByEmpty extends T["by"] extends never[] ? Prisma.True : Prisma.False,
-    InputErrors extends ByEmpty extends Prisma.True
+    ByEmpty extends (T["by"] extends never[] ? Prisma.True : Prisma.False),
+    InputErrors extends (ByEmpty extends Prisma.True
       ? `Error: "by" must not be empty.`
       : HavingValid extends Prisma.False
         ? {
@@ -1761,7 +1726,7 @@ export interface BookingDelegate<
                   [P in OrderFields]: P extends ByFields
                     ? never
                     : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
-                }[OrderFields],
+                }[OrderFields]),
   >(
     args: Prisma.SubsetIntersection<T, BookingGroupByArgs, OrderByArg> &
       InputErrors,
@@ -1824,13 +1789,9 @@ export interface Prisma__BookingClient<
    */
   then<TResult1 = T, TResult2 = never>(
     onfulfilled?:
-      | ((value: T) => TResult1 | PromiseLike<TResult1>)
-      | undefined
-      | null,
+      ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null,
     onrejected?:
-      | ((reason: any) => TResult2 | PromiseLike<TResult2>)
-      | undefined
-      | null,
+      ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null,
   ): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
   /**
    * Attaches a callback for only the rejection of the Promise.
@@ -1839,9 +1800,7 @@ export interface Prisma__BookingClient<
    */
   catch<TResult = never>(
     onrejected?:
-      | ((reason: any) => TResult | PromiseLike<TResult>)
-      | undefined
-      | null,
+      ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null,
   ): runtime.Types.Utils.JsPromise<T | TResult>;
   /**
    * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
