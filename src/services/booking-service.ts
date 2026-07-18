@@ -86,12 +86,12 @@ export async function createBookingPending(
             include: {
               roomType: {
                 include: {
-                  property: true
-                }
-              }
-            }
-          }
-        }
+                  property: true,
+                },
+              },
+            },
+          },
+        },
       });
     },
     {

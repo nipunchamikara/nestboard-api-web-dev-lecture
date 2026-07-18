@@ -142,7 +142,7 @@ export function toPropertyDetailDTO(
   };
 }
 
-type RoomTypeWithProperty = PrismaRoomType & { property: PrismaProperty}
+type RoomTypeWithProperty = PrismaRoomType & { property: PrismaProperty };
 type RoomWithRoomType = PrismaRoom & { roomType: RoomTypeWithProperty };
 type BookingWithDetails = PrismaBooking & { room: RoomWithRoomType };
 
