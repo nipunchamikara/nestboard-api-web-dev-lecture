@@ -2,7 +2,7 @@
 
 Backend for **NestBoard**, the co-living booking platform we're building together as the capstone of the Full-Stack Product Engineering bootcamp.
 
-This repo grows session by session. Each Saturday's end-state lands as a commit tagged `session-N`, and the take-home notes PDF for that week (shared in the cohort group) walks through what changed and the homework attached to it.
+This repo grows session by session. Each Saturday's end-state lands as a commit tagged `session-N`, and the take-home notes PDF for that week (posted to the STEMLink student portal) walks through what changed and the homework attached to it.
 
 ## Stack
 
